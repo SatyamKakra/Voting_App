@@ -1,4 +1,8 @@
 const express = require('express')
+
+const db = require('./db');
+require('dotenv').config();
+// const passport = require('./auth');
 const app = express()
 // require('dotenv').config();
 
@@ -6,6 +10,17 @@ const app = express()
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 const PORT = process.env.PORT || 3000;
+
+const {jwtAuthMiddleware} = require('./jwt');
+
+// import the router file
+const userRoutes = require('./routes/userRoutes');
+const candidateRoutes = require('./routes/candidateRoutes');
+
+
+// use the routers
+app.use('/user', userRoutes);
+app.use('/candidate', candidateRoutes);
 
 
 

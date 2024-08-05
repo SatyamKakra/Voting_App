@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electronic Voting Machine</title>
+    <link rel="stylesheet" href="./voting.css">
+</head>
+<body>
+    <div class="container">
+        <h1>EVM Voting Machine</h1>
+        <div class="candidate">
+            <input type="radio" id="candidate1" name="vote" value="Narendra Modi">
+            <img src="./images/BJP.jpg" alt="Party Logo 1" class="party-logo">
+            <label for="candidate1">Narendra Modi</label>
+        </div>
+        <div class="candidate">
+            <input type="radio" id="candidate2" name="vote" value="Rahul Gandhi">
+            <img src="./images/Congress.svg" alt="Party Logo 2" class="party-logo">
+            <label for="candidate2">Rahul Gandhi</label>
+        </div>
+        <div class="candidate">
+            <input type="radio" id="candidate3" name="vote" value="Arvind Kejriwal">
+            <img src="./images/aap.jpg" alt="Party Logo 3" class="party-logo">
+            <label for="candidate3">Arvind Kejriwal</label>
+        </div>
+        <button onclick="submitVote()">Submit Vote</button>
+        <p id="confirmation" class="confirmation"></p>
+    </div>
+    
+    <script src="./voting.js"></script>
+</body>
+</html>
