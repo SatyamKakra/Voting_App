@@ -44,7 +44,18 @@ router.post('/', jwtAuthMiddleware, async  (req,res) => {
   })
   
 
+// get all candidates
+router.get('/allCandidate', jwtAuthMiddleware, async (req,res) => {
+    try{
+        const candidate = await Candidate.find();
+        res.status(200).json(candidate);
 
+
+    }catch(err){
+        console.log(err);
+        res.status(500).json({error: 'Internal Server Error'})
+    }
+})
 
 //   update 
 router.put('/:candidateId', jwtAuthMiddleware,  async (req,res) => {

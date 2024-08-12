@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const User = require('../models/user');
-const {jwtAuthMiddleware, generateToken} = require('./../jwt');
+const {jwtAuthMiddleware, generateToken, checkAuthForAdmin, verifyJwtToken} = require('./../jwt');
+const { json } = require('body-parser');
 
 // post route to add a User
-router.post('/signup',jwtAuthMiddleware, async (req,res) => {
+router.post('/signup',jwtAuthMiddleware, checkAuthForAdmin, async (req,res) => {
     try{
       if (req.user.role !== 'admin') {
         return res.status(403).json({ error: 'Forbidden: Admins only' });
@@ -44,20 +45,23 @@ router.post('/signup',jwtAuthMiddleware, async (req,res) => {
 
     // find the user by username
     const user = await User.findOne({aadharCardNumber: aadharCardNumber});
+console.log("aadhar", aadharCardNumber);
+console.log("password", password);
 
     // if user dose not exist or password dose not match, return error
-    if(!user || !(await user.comparePassword(password))){
+    if(!user || !(await user.password)){
       return res.status(401).json({error: 'Invalid username or password'});
 
     }
     // generate token
     const payload = {
-      id: user.id,
+      id: user._id,
     }
-    const token = generateToken(payload);
+    const token = await generateToken(payload);
 
     // return token as response
-    res.json({token})
+    res.json({data: user,token})
+    console.log('------------- user',user)
   }catch(err){
     console.log(err);
     res.status(500).json({error: 'Internal Server Error'});
@@ -127,6 +131,21 @@ router.put('/profile/password', jwtAuthMiddleware, async (req, res) => {
   }
 });
 
+// delete
+router.delete('/:userId', jwtAuthMiddleware, async (req,res) => {
+  try{
+    const userId = req.params.userId;
+    const response = await User.findByIdAndDelete(userId);
+    if(!response){
+      return res.status(404).json({error: 'User not found'});
+    }
+    console.log('user deleted');
+    res.status(200).json({message: 'User deleted successfully'});
+  }catch(err){
+    console.error(err);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
 
+})
 
   module.exports = router;

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="./voting.css">
 </head>
 <body>
-    <div class="container">
+    <!-- <div class="container">
         <h1>EVM Voting Machine</h1>
         <div class="candidate">
             <input type="radio" id="candidate1" name="vote" value="Narendra Modi">
@@ -24,6 +24,12 @@
             <img src="./images/aap.jpg" alt="Party Logo 3" class="party-logo">
             <label for="candidate3">Arvind Kejriwal</label>
         </div>
+        <button onclick="submitVote()">Submit Vote</button>
+        <p id="confirmation" class="confirmation"></p>
+    </div> -->
+    <div class="container">
+        <h1>EVM Voting Machine</h1>
+        <div id="candidatesContainer"></div>
         <button onclick="submitVote()">Submit Vote</button>
         <p id="confirmation" class="confirmation"></p>
     </div>
