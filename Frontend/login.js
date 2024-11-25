@@ -1,3 +1,4 @@
+
 const signUpButton = document.getElementById('signUp');
 const signInButton = document.getElementById('signIn');
 const container = document.getElementById('container');
@@ -45,16 +46,17 @@ document.getElementById('loginForm').addEventListener('submit', async function (
 		} else {
 		  window.location.href = 'http://127.0.0.1:5500/Frontend/voting.html';
 		}
-
-		alert('Login successful!');
+		Swal.fire('Success!', 'Login successful!', 'success');
+		// alert('Login successful!');
 	  } else {
 		// Handle errors (e.g., display error message)
 		alert(data.error || 'Login failed!');
 	  }
 	} catch (error) {
 	  // Handle network errors or unexpected issues
+	  Swal.fire('Error!', 'An error occurred. Please try again later.!', 'error');
 	  console.error('Error:', error);
-	  alert('An error occurred. Please try again later.');
+	//   alert('An error occurred. Please try again later.');
 	}
   });
 

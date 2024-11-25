@@ -4,38 +4,84 @@ const router = express.Router();
 const User = require('../models/user');
 const {jwtAuthMiddleware, generateToken, checkAuthForAdmin, verifyJwtToken} = require('./../jwt');
 const { json } = require('body-parser');
-
+const nodemailer = require('nodemailer');
 // post route to add a User
-router.post('/signup',jwtAuthMiddleware, checkAuthForAdmin, async (req,res) => {
-    try{
-      if (req.user.role !== 'admin') {
-        return res.status(403).json({ error: 'Forbidden: Admins only' });
-      }
-      next();
-    const data = req.body //assuming the request body contains the User data
+// router.post('/signup',jwtAuthMiddleware, checkAuthForAdmin, async (req,res) => {
+//     try{
+//       if (req.user.role !== 'admin') {
+//         return res.status(403).json({ error: 'Forbidden: Admins only' });
+//       }
+//       next();
+//     const data = req.body //assuming the request body contains the User data
   
-    // create new User documnet using the mongoose model
-    const newUser = new User(data);
+//     // create new User documnet using the mongoose model
+//     const newUser = new User(data);
   
-    const response = await newUser.save();
-    console.log('data saved');
+//     const response = await newUser.save();
+//     console.log('data saved');
     
+//     const payload = {
+//       id: response.id,
+//     }
+//     const token = generateToken(payload);
+//     console.log("Token is :", token);
+    
+//     res.status(200).json({response: response, token: token});
+//   }
+//   catch(err){
+//     console.log(err);
+//     res.status(500).json({error: 'Internal Server Error'});
+  
+//   }
+  
+//   })
+
+
+// Signup route
+router.post('/signup', jwtAuthMiddleware, checkAuthForAdmin, async (req, res) => {
+
+  try {
+   
+
+    const data = req.body; // Assuming the request body contains the user data
+
+    // Create new user document using the mongoose model
+    const newUser = new User(data);
+    const response = await newUser.save();
+    console.log('User data saved');
+
     const payload = {
       id: response.id,
-    }
+    };
     const token = generateToken(payload);
-    console.log("Token is :", token);
-    
-    res.status(200).json({response: response, token: token});
+    console.log('Token is:', token);
+
+    // Send welcome email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER, // Set this in your environment
+        pass: process.env.EMAIL_PASS, // Set this in your environment
+      },
+    });    
+
+    const mailOptions = {
+      from: 'satyamkakra4u@gmail.com', // Replace with your email
+      to: data.email, // User's email from the request body
+      subject: 'Welcome to Our App!',
+      text: `Hi ${data.name},\n\nYour account has been successfully created!\n\nBest regards,\nSatyam Kakra`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Welcome email sent');
+
+    res.status(200).json({ response: response, token: token, message: 'User created and email sent successfully!' });
+  } catch (err) {
+    console.log('Error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
-  catch(err){
-    console.log(err);
-    res.status(500).json({error: 'Internal Server Error'});
-  
-  }
-  
-  })
-  
+});
+
 
   // login route
   router.post('/login', async(req, res) => {
@@ -49,7 +95,8 @@ console.log("aadhar", aadharCardNumber);
 console.log("password", password);
 
     // if user dose not exist or password dose not match, return error
-    if(!user || !(await user.password)){
+    if(!aadharCardNumber || !password){
+      console.log("")
       return res.status(401).json({error: 'Invalid username or password'});
 
     }

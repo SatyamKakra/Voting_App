@@ -18,6 +18,7 @@ document.getElementById('signUpForm').addEventListener('submit', async function(
     // Gather form data
     const formData = new FormData(event.target);
     const data = {};
+    console.log(data)
     formData.forEach((value, key) => {
         data[key] = value;
     });
